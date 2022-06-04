@@ -98,7 +98,14 @@ func main() {
 		}
 	}()
 
-	fmt.Printf("allocID: %v\n", alloc[0].ID)
-
 	wg.Wait()
+
+	fmt.Printf("\n\n\nRun complete, final status:\n")
+	finalCommand := exec.Command("nomad", "deployment", "status", "-t", `{{printf "%#+v" .StatusDescription}}`, deploy[0].ID)
+	stdout, err := finalCommand.Output()
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	fmt.Println(string(stdout))
 }
